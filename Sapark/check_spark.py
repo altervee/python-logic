@@ -18,6 +18,7 @@
 """
 import random
 import time
+import threading
 def my_callback(name: str, callback):
     callback(name)
 
@@ -28,12 +29,13 @@ my_callback("Juan", saludo)
 
 # Extra
 def order(name: str, confirm, ready, delivery):
-    time.sleep(random.randint(1, 2))
-    confirm(name)
-    time.sleep(random.randint(1, 10))
-    ready(name)
-    time.sleep(random.randint(1, 10))
-    delivery(name)
+    def process():
+        confirm(name)
+        time.sleep(random.randint(1, 10))
+        ready(name)
+        time.sleep(random.randint(1, 10))
+        delivery(name)
+    threading.Thread(target=process).start()
 
 def confirm(name: str):
     print(f"Tu pedido {name} ha sido confirmado")
@@ -44,4 +46,5 @@ def ready(name: str):
 def delivery(name: str):
     print(f"Tu pedido {name} ha sido entregado")
 
-order("cachopo", confirm, ready, delivery)
+order("cachopo de jamon", confirm, ready, delivery)
+order("cachopo de bacon", confirm, ready, delivery)
